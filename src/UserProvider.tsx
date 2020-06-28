@@ -7,23 +7,34 @@ import React, {
 import { User } from "firebase";
 import { auth } from "./firebase";
 
-export const UserContext = createContext<User | null>(null);
-
 type Props = {
   children: ReactNode;
 }
 
+type ContextProps = {
+  user: User | null;
+  loadingAuth: boolean;
+}
+
+export const UserContext = createContext<Partial<ContextProps>>({});
+
 const UserProvider = (props: Props) => {
   const [user, setUser] = useState<User | null>(null);
+  const [loadingAuth, setLoadingAuth] = useState(true);
 
   useEffect(() => {
     auth.onAuthStateChanged(userAuth => {
+      console.log('logou:', userAuth);
       setUser(userAuth);
+      setLoadingAuth(false);
     });
   }, []);
 
   return (
-    <UserContext.Provider value={user}>
+    <UserContext.Provider value={{
+      user: user,
+      loadingAuth: loadingAuth,
+    }}>
       {props.children}
     </UserContext.Provider>
   );
