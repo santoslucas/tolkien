@@ -1,10 +1,10 @@
-import React, { ChangeEvent, SyntheticEvent, useState } from "react";
-import { Link } from "react-router-dom";
-import { auth } from "../../firebase";
+import React, { ChangeEvent, SyntheticEvent, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { auth } from '../../firebase';
 
 const SignIn = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
   const signInWithEmailAndPasswordHandler = (
     event: React.MouseEvent<HTMLButtonElement>,
@@ -13,16 +13,16 @@ const SignIn = () => {
   ) => {
     event.preventDefault();
     auth.signInWithEmailAndPassword(email, password).catch((error) => {
-      console.error("Error signing in with password and email", error);
+      console.error('Error signing in with password and email', error);
     });
   };
 
   const onChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.currentTarget;
 
-    if (name === "userEmail") {
+    if (name === 'userEmail') {
       setEmail(value);
-    } else if (name === "userPassword") {
+    } else if (name === 'userPassword') {
       setPassword(value);
     }
   };

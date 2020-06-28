@@ -1,6 +1,6 @@
-import React, { createContext, ReactNode, useEffect, useState } from "react";
-import { User } from "firebase";
-import { auth } from "./firebase";
+import React, { createContext, ReactNode, useEffect, useState } from 'react';
+import { User } from 'firebase';
+import { auth } from './firebase';
 
 type Props = {
   children: ReactNode;
@@ -19,7 +19,7 @@ const UserProvider = (props: Props) => {
 
   useEffect(() => {
     auth.onAuthStateChanged((userAuth) => {
-      console.log("logou:", userAuth);
+      console.log('logou:', userAuth);
       setUser(userAuth);
       setLoadingAuth(false);
     });

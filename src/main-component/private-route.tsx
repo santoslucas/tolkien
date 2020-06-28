@@ -1,6 +1,6 @@
-import React, { useContext } from "react";
-import { Route, Redirect } from "react-router-dom";
-import { UserContext } from "../UserProvider";
+import React, { useContext } from 'react';
+import { Route, Redirect } from 'react-router-dom';
+import { UserContext } from '../UserProvider';
 
 const PrivateRoute = ({ component, ...rest }: any) => {
   const { user, loadingAuth } = useContext(UserContext);
@@ -17,7 +17,7 @@ const PrivateRoute = ({ component, ...rest }: any) => {
     user ? (
       React.createElement(component, props)
     ) : (
-      <Redirect to={{ pathname: "/signin" }} />
+      <Redirect to={{ pathname: '/signin' }} />
     );
   return <Route {...rest} render={routeComponent} />;
 };
