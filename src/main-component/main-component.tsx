@@ -1,8 +1,8 @@
-import React, {useContext} from 'react';
+import React, { useContext } from "react";
 import Dashboard from "../scenes/dashboard";
-import {UserContext} from "../UserProvider";
+import { UserContext } from "../UserProvider";
 import SignIn from "../scenes/signin/signin";
-import {BrowserRouter, Switch, Route} from "react-router-dom";
+import { BrowserRouter, Switch, Route } from "react-router-dom";
 import PrivateRoute from "./private-route";
 
 const MainComponent = () => {
