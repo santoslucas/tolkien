@@ -1,5 +1,5 @@
 import React from 'react';
-import './App.css';
+import './App.scss';
 import UserProvider from './UserProvider';
 import MainComponent from './main-component';
 

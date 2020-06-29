@@ -1,5 +1,4 @@
-import React, { ChangeEvent, SyntheticEvent, useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { ChangeEvent, useState } from 'react';
 import { auth } from '../../firebase';
 
 const SignIn = () => {
