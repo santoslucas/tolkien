@@ -1,13 +1,11 @@
 import React from 'react';
-import Box from '../../components/box';
+import DailyTasks from './daily-tasks';
 
 const Dashboard = (): JSX.Element => {
   return (
     <div>
       <h1>Bem-vindo!</h1>
-      <Box title="Tarefas">
-        <p>Mais teste!</p>
-      </Box>
+      <DailyTasks />
     </div>
   );
 };
