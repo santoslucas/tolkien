@@ -1,7 +1,7 @@
 import React, { ChangeEvent, useEffect, useState } from 'react';
 import Checkbox from '@material-ui/core/Checkbox';
 import Box from '../../components/box';
-import { firestore } from '../../firebase';
+import { db } from '../../firebase';
 
 const DAILY_TASKS_COLLECTION = 'daily-tasks';
 
@@ -19,13 +19,19 @@ const Task = ({ task }: TaskProps) => {
   const [checked, setChecked] = React.useState(task.done);
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setChecked(event.target.checked);
+    const done = event.target.checked;
+    setChecked(done);
+    const taskRef = db.collection(DAILY_TASKS_COLLECTION).doc(task.id);
+    taskRef.update({ done: done }).catch((error) => {
+      setChecked(!done);
+      console.log('Erro ao atualizar Task', error);
+    });
   };
 
   return (
     <div>
       <Checkbox checked={checked} onChange={handleChange} />
-      <span key={task.id}>{task.name}</span>
+      <span>{task.name}</span>
     </div>
   );
 };
@@ -35,9 +41,7 @@ const DailyTasks = () => {
   useEffect(() => {
     const loadTasks = async () => {
       const resultTasks: TaskType[] = [];
-      const querySnapshot = await firestore
-        .collection(DAILY_TASKS_COLLECTION)
-        .get();
+      const querySnapshot = await db.collection(DAILY_TASKS_COLLECTION).get();
       querySnapshot.forEach((doc) => {
         const task = {
           id: doc.id,
@@ -51,7 +55,7 @@ const DailyTasks = () => {
     loadTasks();
   }, []);
 
-  const tasksList = tasks.map((task) => <Task task={task} />);
+  const tasksList = tasks.map((task) => <Task key={task.id} task={task} />);
 
   return <Box title="Tarefas do dia">{tasksList}</Box>;
 };
