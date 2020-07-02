@@ -1,5 +1,7 @@
 import React, { ChangeEvent, useEffect, useState } from 'react';
 import Checkbox from '@material-ui/core/Checkbox';
+import IconButton from '@material-ui/core/IconButton';
+import AddIcon from '@material-ui/icons/Add';
 import Box from '../../components/box';
 import { db } from '../../firebase';
 
@@ -38,26 +40,48 @@ const Task = ({ task }: TaskProps) => {
 
 const DailyTasks = () => {
   const [tasks, setTasks] = useState<TaskType[]>([]);
-  useEffect(() => {
-    const loadTasks = async () => {
-      const resultTasks: TaskType[] = [];
-      const querySnapshot = await db.collection(DAILY_TASKS_COLLECTION).get();
-      querySnapshot.forEach((doc) => {
-        const task = {
-          id: doc.id,
-          ...doc.data(),
-        } as TaskType;
-        resultTasks.push(task);
-      });
-      setTasks(resultTasks);
-    };
+  const loadTasks = async () => {
+    const resultTasks: TaskType[] = [];
+    const querySnapshot = await db.collection(DAILY_TASKS_COLLECTION).get();
+    querySnapshot.forEach((doc) => {
+      const task = {
+        id: doc.id,
+        ...doc.data(),
+      } as TaskType;
+      resultTasks.push(task);
+    });
+    setTasks(resultTasks);
+  };
 
+  const addTask = () => {
+    console.log('vai adicionar');
+    db.collection(DAILY_TASKS_COLLECTION)
+      .add({
+        name: 'Nova tarefa',
+        done: false,
+      })
+      .then(() => {
+        loadTasks();
+      })
+      .catch((error) => {
+        console.log('Erro ao adicionar Task', error);
+      });
+  };
+
+  useEffect(() => {
     loadTasks();
   }, []);
 
   const tasksList = tasks.map((task) => <Task key={task.id} task={task} />);
 
-  return <Box title="Tarefas do dia">{tasksList}</Box>;
+  return (
+    <Box title="Tarefas do dia">
+      {tasksList}
+      <IconButton onClick={addTask}>
+        <AddIcon />
+      </IconButton>
+    </Box>
+  );
 };
 
 export default DailyTasks;
