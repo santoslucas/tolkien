@@ -4,6 +4,7 @@ import IconButton from '@material-ui/core/IconButton';
 import AddIcon from '@material-ui/icons/Add';
 import Box from '../../components/box';
 import { db } from '../../firebase';
+import InlineEdit from '../../components/inline-edit/inline-edit';
 
 const DAILY_TASKS_COLLECTION = 'daily-tasks';
 
@@ -18,50 +19,54 @@ type TaskProps = {
 };
 
 const Task = ({ task }: TaskProps) => {
-  const [checked, setChecked] = React.useState(task.done);
+  const taskRef = db.collection(DAILY_TASKS_COLLECTION).doc(task.id);
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const done = event.target.checked;
-    setChecked(done);
-    const taskRef = db.collection(DAILY_TASKS_COLLECTION).doc(task.id);
+    // setChecked(done);
     taskRef.update({ done: done }).catch((error) => {
-      setChecked(!done);
+      // setChecked(!done);
       console.log('Erro ao atualizar Task', error);
     });
   };
 
+  const updateText = (text: string) => {
+    if (text) {
+      taskRef
+        .update({ name: text })
+        // .then(() => {
+        //   setName(text);
+        // })
+        .catch((error) => {
+          console.log('Erro ao atualizar Task', error);
+        });
+    } else {
+      taskRef.delete().catch((error) => {
+        console.log('Erro ao deletar Task', error);
+      });
+    }
+  };
+
   return (
     <div>
-      <Checkbox checked={checked} onChange={handleChange} />
-      <span>{task.name}</span>
+      <Checkbox checked={task.done} onChange={handleChange} />
+      <InlineEdit text={task.name} onSetText={updateText} />
     </div>
   );
 };
 
 const DailyTasks = () => {
   const [tasks, setTasks] = useState<TaskType[]>([]);
-  const loadTasks = async () => {
-    const resultTasks: TaskType[] = [];
-    const querySnapshot = await db.collection(DAILY_TASKS_COLLECTION).get();
-    querySnapshot.forEach((doc) => {
-      const task = {
-        id: doc.id,
-        ...doc.data(),
-      } as TaskType;
-      resultTasks.push(task);
-    });
-    setTasks(resultTasks);
+
+  const updateTasks = (newTasks: TaskType[]) => {
+    setTasks(newTasks);
   };
 
   const addTask = () => {
-    console.log('vai adicionar');
     db.collection(DAILY_TASKS_COLLECTION)
       .add({
         name: 'Nova tarefa',
         done: false,
-      })
-      .then(() => {
-        loadTasks();
       })
       .catch((error) => {
         console.log('Erro ao adicionar Task', error);
@@ -69,7 +74,17 @@ const DailyTasks = () => {
   };
 
   useEffect(() => {
-    loadTasks();
+    db.collection(DAILY_TASKS_COLLECTION).onSnapshot((querySnapshot) => {
+      const resultTasks: TaskType[] = [];
+      querySnapshot.forEach((doc) => {
+        const task = {
+          id: doc.id,
+          ...doc.data(),
+        } as TaskType;
+        resultTasks.push(task);
+      });
+      updateTasks(resultTasks);
+    });
   }, []);
 
   const tasksList = tasks.map((task) => <Task key={task.id} task={task} />);
