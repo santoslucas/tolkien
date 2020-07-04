@@ -1,0 +1,15 @@
+@import '../../styles/variables';
+
+.signin {
+  &__wrapper {
+    display: flex;
+    flex-direction: column;
+    align-self: center;
+    margin-top: 40px;
+    width: 320px;
+  }
+
+  &__error {
+    color: $ERROR;
+  }
+}
