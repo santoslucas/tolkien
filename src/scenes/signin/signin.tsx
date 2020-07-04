@@ -10,7 +10,7 @@ const SignIn = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string>('');
-  const { user, loadingAuth } = useContext(UserContext);
+  const { user } = useContext(UserContext);
   const history = useHistory();
 
   useEffect(() => {

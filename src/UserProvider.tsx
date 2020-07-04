@@ -19,7 +19,6 @@ const UserProvider = (props: Props) => {
 
   useEffect(() => {
     auth.onAuthStateChanged((userAuth) => {
-      console.log('logou:', userAuth);
       setUser(userAuth);
       setLoadingAuth(false);
     });
